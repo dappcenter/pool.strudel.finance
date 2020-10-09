@@ -51,7 +51,7 @@ const updateTokens = async ({ database }) => {
       signer,
     );
 
-    const denormWeight = await poolContract.methods.getDenormalizedWeight(VBTCAddress).call();
+    const denormWeight = await poolContract.getDenormalizedWeight(VBTCAddress);
     const weightVBTC = new BigNumber(denormWeight);
 
     const wethWeight = new BigNumber(5).times(new BigNumber(10e17));
@@ -115,7 +115,10 @@ export const initialize = async ({ database }) => {
   console.log('mappedAmounts: ', mappedAmounts);
   const tokens = buildTokens(mappedAmounts);
 
+  const isBigNumber = (thing) => (thing && BigNumber.isBigNumber(thing) && !thing.isNaN());
   console.log('TOKEN CONFIG', tokens);
+  console.log(tokens.WETH.amountPerUnit);
+  console.log(isBigNumber(tokens.WETH.amountPerUnit));
 
   const submit = async () => {
     const amount = BigNumber(mint.slider).multipliedBy(10 ** 18);
