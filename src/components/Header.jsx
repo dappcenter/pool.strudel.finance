@@ -19,7 +19,7 @@ const headerStore = store({
 
 const logPrefix = (functionName) => `@pie-dao/eth - eth#${functionName}`;
 
-const Header = ({ images, links }) => {
+const Header = ({ images }) => {
   const wallet = useWallet();
   const blocknativeDappId = '523b279d-0fe0-42e8-8977-e688c3686e57';
   const simpleIdAppId = '76c97a89-5ff2-4730-beac-3320eed25ded';
@@ -84,7 +84,6 @@ const Header = ({ images, links }) => {
     }
   };
 
-  const { docs, homepage, whitepaper } = links;
   const { logo } = images;
   const { mobileMenuVisible, toggle } = headerStore;
 
@@ -149,11 +148,6 @@ const Header = ({ images, links }) => {
 Header.propTypes = {
   images: PropTypes.shape({
     logo: PropTypes.string.isRequired,
-  }).isRequired,
-  links: PropTypes.shape({
-    docs: PropTypes.string.isRequired,
-    homepage: PropTypes.string.isRequired,
-    whitepaper: PropTypes.string.isRequired,
   }).isRequired,
 };
 

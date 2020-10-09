@@ -7,8 +7,6 @@ const year = (new Date()).getFullYear();
 const Footer = ({
   links: {
     discord,
-    docs,
-    forum,
     github,
     medium,
     twitter,
