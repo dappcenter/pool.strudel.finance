@@ -1,9 +1,11 @@
+
 import BigNumber from 'bignumber.js';
 
 import { eth } from '@pie-dao/eth';
 import { ethers } from 'ethers';
 import { mint } from '@pie-dao/mint';
-import { pieSmartPool } from '@pie-dao/abis';
+import { ReservePoolController } from '../abi/ReservePoolController';
+import { BPool } from '../abi/BPool';
 
 export const controllerAddress = '0xd439932fbc03c0f646324ef09a4a0c28c0d4008b'.toLowerCase();
 export const WETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'.toLowerCase();
@@ -17,6 +19,7 @@ export const mintable = {
   symbol: 'vBTC++',
   weight: BigNumber(100),
 };
+const MAX = ethers.constants.MaxUint256;
 
 const buildTokens = (mappedAmounts) => ({
   WETH: {
@@ -37,21 +40,30 @@ const buildTokens = (mappedAmounts) => ({
   },
 });
 
+
 const updateTokens = async ({ database }) => {
   try {
-    const [
-      WETHBalance,
-      VBTCBalance,
-    ] = await Promise.all([
+    const [WETHBalance, VBTCBalance] = await Promise.all([
       database.balance({ address: poolAddress, token: WETHAddress }),
       database.balance({ address: poolAddress, token: VBTCAddress }),
     ]);
+    const poolContract = new ethers.Contract(
+      poolAddress,
+      BPool,
+      signer
+    );
 
-    const vBtcPrice = BigNumber(40);
-    const totalSupply = WETHBalance.plus(VBTCBalance.multipliedBy(vBtcPrice));
+    const denormWeight = await poolContract.methods
+          .getDenormalizedWeight(vBtcContract.options.address)
+          .call()
+    const weightVBTC  =  new BigNumber(denormWeight)
 
-    const WETHPercentage = WETHBalance.multipliedBy(wethPrice).dividedBy(totalSupply);
-    const VBTCPercentage = VBTCBalance.multipliedBy(vBtcPrice).dividedBy(totalSupply);
+    const wethWeight = new BigNumber(5).times(new BigNumber(10e17))
+
+    const totalWeight = weightVBTC.plus(wethWeight)
+
+    const WETHPercentage = wethWeight.dividedBy(totalWeight);
+    const VBTCPercentage = weightVBTC.dividedBy(totalWeight);
 
     const WETHRequired = BigNumber(1).multipliedBy(WETHPercentage);
     const VBTCRequired = BigNumber(1).multipliedBy(VBTCPercentage);
@@ -74,31 +86,28 @@ const updateTokens = async ({ database }) => {
 };
 
 export const initialize = async ({ database }) => {
-  const {
-    approve,
-    notify,
-    signer,
-    transactionOverrides,
-  } = eth;
+  const { approve, notify, signer, transactionOverrides } = eth;
 
   // Load up pools target weights
-  const controllerContract = new ethers.Contract(controllerAddress, pieSmartPool, signer);
-  const poolAmount = ethers.BigNumber.from('1000000000000000000');
+  const controllerContract = new ethers.Contract(
+    controllerAddress,
+    ReservePoolController,
+    signer
+  );
+  //const poolAmount = ethers.BigNumber.from('1000000000000000000');
 
-  const [
-    WETHBalance,
-    VBTCBalance,
-  ] = await Promise.all([
+  const [WETHBalance, VBTCBalance] = await Promise.all([
     database.balance({ address: poolAddress, token: WETHAddress }),
     database.balance({ address: poolAddress, token: VBTCAddress }),
   ]);
 
-  const poolAmounts = [["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0xe1406825186d63980fd6e2ec61888f7b91c4bae4"], [
-    WETHBalance,
-    VBTCBalance
-  ]];//await controllerContract.calcTokensForAmount(poolAmount);
-
-
+  const poolAmounts = [
+    [
+      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      '0xe1406825186d63980fd6e2ec61888f7b91c4bae4',
+    ],
+    [WETHBalance, VBTCBalance],
+  ]; //await controllerContract.calcTokensForAmount(poolAmount);
 
   console.log('poolAmounts:', poolAmounts[1][0].toString());
   const mappedAmounts = {};
@@ -118,7 +127,9 @@ export const initialize = async ({ database }) => {
     await approve({ spender: controllerAddress, token: WETHAddress });
     await approve({ spender: controllerAddress, token: VBTCAddress });
 
-    notify(await controllerContract.joinPool(joinAmount, overrides));
+    notify(
+      await controllerContract.joinPool(joinAmount, [MAX, MAX], overrides)
+    );
   };
 
   if (!mint.initialized) {
@@ -131,8 +142,12 @@ export const initialize = async ({ database }) => {
         tokens,
       });
 
-      setInterval(() => { updateTokens({ database }); }, 10000);
-      setTimeout(() => { updateTokens({ database }); }, 1000);
+      setInterval(() => {
+        updateTokens({ database });
+      }, 10000);
+      setTimeout(() => {
+        updateTokens({ database });
+      }, 1000);
     } catch (e) {
       console.error('MINT INITIALIZING ERROR', e);
     }
