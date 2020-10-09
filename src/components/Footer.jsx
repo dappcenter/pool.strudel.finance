@@ -17,7 +17,7 @@ const Footer = ({
   <div className="footer-container">
     <div className="left">
       <span className="footer-link">
-        PieDAO&nbsp;
+        Strudel Finance &nbsp;
         { year }
       </span>
     </div>
@@ -48,29 +48,12 @@ const Footer = ({
       </a>
       <a
         className="footer-link"
-        href={forum}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Forum
-      </a>
-      <a
-        className="footer-link"
-        href={docs}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Documentation
-      </a>
-      <a
-        className="footer-link"
         href={github}
         target="_blank"
         rel="noopener noreferrer"
       >
         Github
       </a>
-      <img src="./assets/img/aragon.svg" className="aragon" alt="Aragon" />
     </div>
   </div>
 );

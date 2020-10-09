@@ -97,22 +97,7 @@ const Header = ({ images, links }) => {
         </Link>
       </div>
       <div className="right">
-        <a
-          className="link"
-          href={homepage}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          docs
-        </a>
-        <a
-          className="link"
-          href={whitepaper}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          whitepaper
-        </a>
+
 
         <div
           className="btn connect-button-container"
@@ -151,28 +136,6 @@ const Header = ({ images, links }) => {
                   >
                     home
                   </Link>
-                </li>
-                <li>
-                  <a
-                    onClick={toggle}
-                    className="navbar-item"
-                    href={docs}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    docs
-                  </a>
-                </li>
-                <li>
-                  <a
-                    onClick={toggle}
-                    className="navbar-item"
-                    href={whitepaper}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    whitepaper
-                  </a>
                 </li>
               </ul>
             </nav>

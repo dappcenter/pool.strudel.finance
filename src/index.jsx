@@ -37,15 +37,15 @@ const images = {
 };
 
 const links = {
-  discord: 'https://discord.gg/eJTYNUF',
-  docs: 'https://docs.piedao.org/',
-  forum: 'https://forum.piedao.org/',
-  github: 'https://github.com/pie-dao/',
-  homepage: 'https://docs.piedao.org/',
-  liquidity: '#/liquidity',
-  medium: 'https://medium.com/piedao',
-  twitter: 'https://twitter.com/PieDAO_DeFi?s=20',
-  whitepaper: 'https://pie283460.typeform.com/to/uy9NZt',
+  discord: 'https://discord.gg/CcEE5mC',
+  docs: '',
+  forum: '',
+  github: 'https://github.com/strudel-finance/',
+  homepage: 'https://strudel.finance/',
+  liquidity: '',
+  medium: 'https://medium.com/@strudelfinance/strudel-manifesto-580759f9634b',
+  twitter: 'https://twitter.com/strudelfinance',
+  whitepaper: '',
 };
 
 const text = {
