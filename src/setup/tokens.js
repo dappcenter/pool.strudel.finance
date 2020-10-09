@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import { mint } from '@pie-dao/mint';
 import ReservePoolController from '../abi/ReservePoolController';
 import BPool from '../abi/BPool';
+import erc20 from '../abi/erc20';
 
 export const controllerAddress = '0xd439932fbc03c0f646324ef09a4a0c28c0d4008b'.toLowerCase();
 export const WETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'.toLowerCase();
@@ -28,7 +29,7 @@ const buildTokens = (mappedAmounts) => ({
     amountPerUnit: BigNumber(mappedAmounts[WETHAddress]).dividedBy(10 ** 18),
     color: '#1caa98',
     symbol: 'ETH',
-    weight: BigNumber(5),
+    weight: BigNumber(50),
   },
   VBTC: {
     address: VBTCAddress,
@@ -36,7 +37,7 @@ const buildTokens = (mappedAmounts) => ({
     amountPerUnit: BigNumber(mappedAmounts[VBTCAddress]).dividedBy(10 ** 18),
     color: '#305cee',
     symbol: 'vBTC',
-    weight: BigNumber(5),
+    weight: BigNumber(50),
   },
 });
 
@@ -50,6 +51,22 @@ const updateTokens = async ({ database }) => {
       BPool,
       signer,
     );
+    const wETHContract = new ethers.Contract(
+      WETHAddress,
+      erc20,
+      signer,
+    );
+    const vBTCContract = new ethers.Contract(
+      VBTCAddress,
+      erc20,
+      signer,
+    );
+
+    const controllerContract = new ethers.Contract(
+      controllerAddress,
+      ReservePoolController,
+      signer,
+    );
 
     const denormWeight = await poolContract.getDenormalizedWeight(VBTCAddress);
     const weightVBTC = new BigNumber(denormWeight.toHexString(), 16);
@@ -58,12 +75,20 @@ const updateTokens = async ({ database }) => {
 
     const totalWeight = weightVBTC.plus(wethWeight);
 
+    let totalSupply = await controllerContract.totalSupply();
+    totalSupply = new BigNumber(totalSupply.toHexString(), 16);
+
+    let vBTCinPool = await vBTCContract.balanceOf(poolAddress);
+    vBTCinPool = new BigNumber(vBTCinPool.toHexString(), 16);
+
+    let wETHinPool = await wETHContract.balanceOf(poolAddress);
+    wETHinPool = new BigNumber(wETHinPool.toHexString(), 16);
 
     const WETHPercentage = wethWeight.dividedBy(totalWeight);
     const VBTCPercentage = weightVBTC.dividedBy(totalWeight);
 
-    const WETHRequired = BigNumber(1).multipliedBy(WETHPercentage);
-    const VBTCRequired = BigNumber(1).multipliedBy(VBTCPercentage);
+    const WETHRequired = wETHinPool.dividedBy(totalSupply);
+    const VBTCRequired = vBTCinPool.dividedBy(totalSupply);
 
     const updates = {
       WETH: {
