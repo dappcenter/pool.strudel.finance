@@ -32,7 +32,7 @@ const config = {
 };
 
 const images = {
-  logo: './assets/logo.png',
+  logo: './assets/logo1.png',
   hero: './assets/img/hero.png',
 };
 
