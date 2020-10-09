@@ -51,7 +51,7 @@ const updateTokens = async ({ database }) => {
       signer,
     );
 
-    const denormWeight = await poolContract.methods.getDenormalizedWeight(VBTCAddress).call();
+    const denormWeight = await poolContract.getDenormalizedWeight(VBTCAddress).call();
     const weightVBTC = new BigNumber(denormWeight);
 
     const wethWeight = new BigNumber(5).times(new BigNumber(10e17));
