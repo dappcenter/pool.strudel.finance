@@ -28,7 +28,7 @@ const buildTokens = (mappedAmounts) => ({
     decimals: 18,
     amountPerUnit: BigNumber(mappedAmounts[WETHAddress]).dividedBy(10 ** 18),
     color: '#1caa98',
-    symbol: 'ETH',
+    symbol: 'WETH',
     weight: BigNumber(50),
   },
   VBTC: {
