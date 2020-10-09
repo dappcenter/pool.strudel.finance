@@ -52,11 +52,12 @@ const updateTokens = async ({ database }) => {
     );
 
     const denormWeight = await poolContract.getDenormalizedWeight(VBTCAddress);
-    const weightVBTC = new BigNumber(denormWeight, 16);
+    const weightVBTC = new BigNumber(denormWeight.toHexString(), 16);
 
     const wethWeight = new BigNumber(5).times(new BigNumber(10e17));
 
     const totalWeight = weightVBTC.plus(wethWeight);
+
 
     const WETHPercentage = wethWeight.dividedBy(totalWeight);
     const VBTCPercentage = weightVBTC.dividedBy(totalWeight);
