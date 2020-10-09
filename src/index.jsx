@@ -61,7 +61,7 @@ const text = {
     chartHeader: 'Allocation',
     liquidityText:
       '<h1>WARNING! - BETA PRODUCT!</h1>'
-      + '<p>USD++ is newly launched. Balancer Pools are newly launched.</p>'
+      + '<p>vBTC++ is newly launched.</p>'
       + '<p>DeFi products, and this product in particular are risky.</p>'
       + '<p>Use at your own risk.</p>',
     verb: 'Add',
