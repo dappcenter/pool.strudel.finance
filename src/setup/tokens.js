@@ -77,6 +77,7 @@ const updateTokens = async ({ database }) => {
 
     let totalSupply = await controllerContract.totalSupply();
     totalSupply = new BigNumber(totalSupply.toHexString(), 16);
+    totalSupply = totalSupply.minus(1);
 
     let vBTCinPool = await vBTCContract.balanceOf(poolAddress);
     vBTCinPool = new BigNumber(vBTCinPool.toHexString(), 16);
