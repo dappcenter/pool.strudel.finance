@@ -145,7 +145,7 @@ export const initialize = async ({ database }) => {
   const submit = async () => {
     const amount = BigNumber(mint.slider).multipliedBy(10 ** 18);
     const joinAmount = ethers.BigNumber.from(amount.toFixed());
-    const overrides = transactionOverrides({ gasLimit: 1000000 });
+    const overrides = transactionOverrides({ gasLimit: 250000 });
 
     await approve({ spender: controllerAddress, token: WETHAddress });
     await approve({ spender: controllerAddress, token: VBTCAddress });
