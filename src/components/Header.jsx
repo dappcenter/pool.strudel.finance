@@ -97,7 +97,6 @@ const Header = ({ images }) => {
       </div>
       <div className="right">
 
-
         <div
           className="btn connect-button-container"
           onClick={() => activate('injected')}

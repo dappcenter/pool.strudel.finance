@@ -55,8 +55,6 @@ const Footer = ({
     </div>
   </div>
 );
-
-
 Footer.propTypes = {
   links: PropTypes.shape({
     discord: PropTypes.string.isRequired,
@@ -67,6 +65,5 @@ Footer.propTypes = {
     twitter: PropTypes.string.isRequired,
   }).isRequired,
 };
-
 
 export default view(Footer);

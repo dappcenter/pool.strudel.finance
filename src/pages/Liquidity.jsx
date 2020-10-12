@@ -7,7 +7,6 @@ import { view } from '@risingstack/react-easy-state';
 import PoolBalance from '../components/PoolBalance';
 
 const Liquidity = (props) => {
-  console.log(props);
   if (eth.account) {
     return (
       <div className="liquidity-container content">

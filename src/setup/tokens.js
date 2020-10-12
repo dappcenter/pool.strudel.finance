@@ -1,4 +1,3 @@
-
 import BigNumber from 'bignumber.js';
 
 import { eth } from '@pie-dao/eth';
@@ -40,7 +39,6 @@ const buildTokens = (mappedAmounts) => ({
     weight: BigNumber(50),
   },
 });
-
 
 const updateTokens = async ({ database }) => {
   const { signer } = eth;
@@ -134,12 +132,10 @@ export const initialize = async ({ database }) => {
     [WETHBalance, VBTCBalance],
   ]; // await controllerContract.calcTokensForAmount(poolAmount);
 
-  console.log('poolAmounts:', poolAmounts[1][0].toString());
   const mappedAmounts = {};
   poolAmounts[0].forEach((token, index) => {
     mappedAmounts[token.toLowerCase()] = poolAmounts[1][index].toString();
   });
-  console.log('mappedAmounts: ', mappedAmounts);
   const tokens = buildTokens(mappedAmounts);
 
   const submit = async () => {
@@ -155,6 +151,17 @@ export const initialize = async ({ database }) => {
     );
   };
 
+  const remove = async () => {
+    const amount = BigNumber(mint.slider).multipliedBy(10 ** 18);
+    const exitAmount = ethers.BigNumber.from(amount.toFixed());
+    const overrides = transactionOverrides({ gasLimit: 500000 });
+
+    await approve({ spender: controllerAddress, token: controllerAddress });
+    notify(
+      await controllerContract.exitPool(exitAmount, [0, 0], overrides),
+    );
+  };
+
   if (!mint.initialized) {
     try {
       mint.init({
@@ -162,6 +169,7 @@ export const initialize = async ({ database }) => {
         database,
         mintable,
         submit,
+        remove,
         tokens,
       });
 
